@@ -16,15 +16,21 @@ class App {
     this.server = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
     this.friendList = [];
     this.rooms = new Set();
+    this.messageSet = new Set();
+    this.setSize;
     this.dataStream;
     this.currentRoom;
     this.currentUser;
   }
 
   init() {
+    var context = this;
     this.fetch();
     this.connectEventListeners();
     this.getUserName();
+    // setInterval(function() {
+    //   context.upDateFetch();
+    // }, 1000);
     //setInterval(() => { /*this.clearMessages();*/ this.connectEventListeners(); /*this.fetch();*/ }, 1000);
   }
     
@@ -79,8 +85,41 @@ class App {
       success: function (data) {
         console.log('chatterbox: Message received', data);
         context.renderMessage(data);
-        context.dataStream = data;
+        context.dataStream = data;  
         context.createRoomList();
+      },
+      error: function (data) {
+        // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+        console.error('chatterbox: Failed to get message', data);
+      }
+    });
+  }
+
+  upDateFetch() {
+    var context = this;
+    var query = '?order="-createdAt"&limit=3';
+    $.ajax({
+      url: context.server + query,
+      type: 'GET',
+      contentType: 'application/json',
+      success: function (data) {
+        // console.log('chatterbox: Message received', data);
+        context.dataStream = data; 
+        for (var i = 0; i < data.results.length; i++) {
+          context.messageSet.add(data.results[i].objectId);
+        } 
+        console.log(data);
+        var difference = context.messageSet.size - context.setSize;
+        console.log(difference);
+        
+        if (difference > 0) {
+          for (var i = 0; i < difference; i++) {
+            context.addNewMessage(context.dataStream.results[i]);
+          }
+        }
+        context.setSize = context.messageSet.size;
+
+        
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -93,7 +132,7 @@ class App {
     var context = this;
     var messages = messageInfo.results;
     var $chatBox = $('#chats');
-    for (var i = (messages.length - 1); i >= 0; i--) {
+    for (var i = 0; i <= (messages.length - 1); i++) {
       var message = messages[i];
       var $messageBlock = $('<div class="messageBlock"></div>');
       var $username = $('<h3 class="username" data></h3>');
@@ -101,12 +140,16 @@ class App {
       $username.text(message.username);
       var $text = $('<p></p>');
       $text.text(message.text);
+      var $timeStamp = $('<h5 class="time" data></h5>');
+      $timeStamp.text(message.createdAt);
       $messageBlock.append($username);
       $messageBlock.append($text);
+      $messageBlock.append($timeStamp);    
       $chatBox.append($messageBlock);
       this.rooms.add(message.roomname);
+      context.messageSet.add(message.objectId);
     }
-
+    this.setSize = context.messageSet.size;
     $('.username').on('click', function(event) {
       var user = $(this).data('username');
       context.handleUsernameClick(user);
@@ -124,8 +167,11 @@ class App {
     $username.text(message.username);
     var $text = $('<p></p>');
     $text.text(message.text);
+    var $timeStamp = $('<h5 class="time" data></h5>');
+    $timeStamp.text(message.createdAt);
     $messageBlock.append($username);
     $messageBlock.append($text);
+    $messageBlock.append($timeStamp);
     $chatBox.prepend($messageBlock);
   }
 
@@ -140,9 +186,18 @@ class App {
     $('#roomSelect').append($node);
   }
 
+  addToFriendsList(friend) {
+    var $node = $('<p class="friend" data></p>');  
+    $node.text(friend);
+    $node.data('friend', friend);
+    $('#friendsList').append($node);
+  }
+
   handleUsernameClick(username) {
     this.friendList[username] = true;
+    this.addToFriendsList(username);
   }
+
 
   createRoomList() {
     var context = this;
@@ -187,6 +242,10 @@ class App {
     this.clearMessages();
     this.renderMessage(obj);
     this.currentRoom = roomname;
+    $('.roomTitle').empty();
+    var $roomTitle = $('<h2 class="roomTitle"></h2>');
+    $roomTitle.text(this.currentRoom);
+    $('.putTitle').append($roomTitle);
   }
 
 

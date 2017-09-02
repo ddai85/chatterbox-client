@@ -28,18 +28,27 @@
       <h1>chatterbox</h1>
       
       <div class="username"></div>
+    <div class="userInputBox">
       <div class="form">
         Message: <input type="text" placeholder="Enter Message Here" class='inputBox'>
-        <button class="sendMessage">Send</button><br>
+        <button class="sendMessage">Send</button>
+      </div>
+      <div class="form putTitle">
         New Chat Room: <input type="text" placeholder="Room Name" class='newRoom'>
         <button class="addNewRoom">Add room</button>
       </div>
-        
+    </div>    
       <div class="dropdown">
         <button>Chat Room</button>
         <div id='roomSelect' class="dropdown-content">
         </div>
         <button class="clearChat">Clear Chat Box</button>
+      </div>
+
+      <div class="dropdown">
+        <button>Friends</button>
+        <div id='friendsList' class="dropdown-content">
+        </div>
       </div>
   
       <div id="chats"></div>
