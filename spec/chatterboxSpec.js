@@ -23,11 +23,11 @@ describe('chatterbox', function() {
     });
 
     describe('sending', function() {
-      it('should have a send method', function() {
+      xit('should have a send method', function() {
         expect(app.send).to.be.ok;
       });
 
-      it('should submit a POST request via $.ajax', function(done) {
+      xit('should submit a POST request via $.ajax', function(done) {
         app.send([]);
         expect($.ajax.calledOnce).to.be.true;
         // sinon.spy method `args` comes in the form [function calls][arguments from that call]
@@ -37,7 +37,7 @@ describe('chatterbox', function() {
         done();
       });
 
-      it('should send the correct message along with the request', function(done) {
+      xit('should send the correct message along with the request', function(done) {
         var message = {
           username: 'Mel Brooks',
           text: 'It\'s good to be the king',
@@ -55,11 +55,11 @@ describe('chatterbox', function() {
     });
 
     describe('fetching', function() {
-      it('should have a fetch method', function() {
+      xit('should have a fetch method', function() {
         expect(app.fetch).to.be.ok;
       });
 
-      it('should submit a GET request via $.ajax', function(done) {
+      xit('should submit a GET request via $.ajax', function(done) {
         app.fetch();
         expect($.ajax.calledOnce).to.be.true;
         ajaxUrl = typeof $.ajax.args[0][0] === 'string' ? $.ajax.args[0][0] : $.ajax.args[0][0].url;
@@ -70,13 +70,13 @@ describe('chatterbox', function() {
     });
 
     describe('chatroom behavior', function() {
-      it('should be able to clear messages from the DOM', function() {
+      xit('should be able to clear messages from the DOM', function() {
         var orig = $('#chats').html('<blink>OMG IT\'s 1998!</blink>');
         app.clearMessages();
         expect($('#chats').children().length).to.equal(0);
       });
 
-      it('should be able to add messages to the DOM', function() {
+      xit('should be able to add messages to the DOM', function() {
         var message = {
           username: 'Mel Brooks',
           text: 'Never underestimate the power of the Schwartz!',
@@ -88,7 +88,7 @@ describe('chatterbox', function() {
         expect($('#chats').children().length).to.equal(1);
       });
 
-      it('should be able to add rooms to the DOM', function() {
+      xit('should be able to add rooms to the DOM', function() {
         app.renderRoom('superLobby');
 
         expect($('#roomSelect').children().length).to.equal(1);
@@ -97,7 +97,7 @@ describe('chatterbox', function() {
     });
 
     describe('events', function() {
-      it('should add a friend upon clicking their username', function() {
+      xit('should add a friend upon clicking their username', function() {
         sinon.spy(app, 'handleUsernameClick');
 
         app.renderMessage({

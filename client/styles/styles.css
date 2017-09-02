@@ -59,17 +59,17 @@ form input[type=text] {
     padding: 5px;
 }
 
-.chat {
+#chats {
     padding: 5px;
     margin-bottom: 5px;
     background-color: #eee;
 }
 
-.chat .username {
+#chats .username {
     font-weight: 800;
 }
 
-.chat:hover {
+#chats:hover {
     background-color: #ddd;
 }
 
@@ -107,4 +107,14 @@ form input[type=text] {
 
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+.messageBlock {
+    border: solid;
+    border-radius: 5px;
+    background-color: #74afdb;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 10px;
+    width: 50%;
 }

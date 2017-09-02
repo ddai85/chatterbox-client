@@ -14,20 +14,37 @@ class App {
   constructor() {
     console.log('hello1');
     this.server = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
-    // this.init();
+    this.friendList = [];
   }
 
   init() {
-    this.connectEventListeners();
     this.fetch();
+    this.connectEventListeners();
+    //setInterval(() => { /*this.clearMessages();*/ this.connectEventListeners(); /*this.fetch();*/ }, 1000);
   }
     
   connectEventListeners() {
     var context = this;
     $('.sendMessage').on('click', function(event) {
-      console.log('hello');
+      //get message from input box
+      var textMessage = $('.inputBox').val();
+      // console.log('hey',textMessage)
+      //get username
+      //get time
+      //construct into message object
       context.send(message);
     });
+
+    $('.clearChat').on('click', function(event) {
+      context.clearMessages();
+    });
+
+    $('.username').on('click', function(event) {
+      var user = $(this).data('username');
+      context.handleUsernameClick(user);
+    });
+
+
   }
 
   send(message) {
@@ -55,8 +72,8 @@ class App {
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
-        console.log('chatterbox: Message received');
-        context.renderMessages(data);
+        console.log('chatterbox: Message received', data);
+        context.renderMessage(data);
       },
       error: function (data) {
         // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -65,36 +82,44 @@ class App {
     });
   }
 
-  renderMessages(messageInfo) {
-    var count = 0;
-    console.log();
+  renderMessage(messageInfo) {
     var messages = messageInfo.results;
-    var $chatBox = $('.chat');
-    console.log($chatBox);
-    for (var i = messages.length - 1; i >= 0; i--) {
-      count++;
-      if (count === 7) {
-        debugger;
-      }
+    var $chatBox = $('#chats');
+    for (var i = (messages.length - 1); i >= 0; i--) {
       var message = messages[i];
-      if (typeof message.text === 'string') {
-        var $node = $(`<p>${message.text}</p>`);  //
-        $chatBox.append($node);
-      }
+      var $messageBlock = $('<div class="messageBlock"></div>');
+      var $username = $('<h3 class="username" data></h3>');
+      $username.data('username', message.username);
+      $username.text(message.username);
+      var $text = $('<p></p>');
+      $text.text(message.text);
+      $messageBlock.append($username);
+      $messageBlock.append($text);
+      $chatBox.append($messageBlock);
     }
+    // this.connectEventListeners();
 
-  }
-
-  clearMessages() {
     
   }
 
+  clearMessages() {
+    $('#chats').empty();
+  }
 
+  renderRoom(roomName) {
+    var $node = $('<p></p>');  //
+    $node.text(roomName);
+    $('#roomSelect').append($node);
+  }
 
+  handleUsernameClick(username) {
+    this.friendList[username] = true;
+  }
 
 
 } // end of class
 
 
 var app = new App();
+
 
