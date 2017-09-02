@@ -36,6 +36,13 @@ class App {
       context.send(message);
     });
 
+    $('.addNewRoom').on('click', function(event) {
+      var room = $('.newRoom').val();
+      context.rooms.add(room);
+      context.createRoomList();
+      context.handleRoomNameClick(room);
+    });
+
     $('.clearChat').on('click', function(event) {
       context.clearMessages();
     });
@@ -63,9 +70,10 @@ class App {
 
   fetch() {
     var context = this;
+    var query = '?order="-createdAt"';
     $.ajax({
       // This is the url you should use to communicate with the parse API server.
-      url: context.server,
+      url: context.server + query,
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
@@ -126,7 +134,7 @@ class App {
   }
 
   addToRoomMenu(roomName) {
-    var $node = $('<p class="room" data></p>');  //
+    var $node = $('<p class="room" data></p>');  
     $node.text(roomName);
     $node.data('roomname', roomName);
     $('#roomSelect').append($node);
@@ -138,6 +146,7 @@ class App {
 
   createRoomList() {
     var context = this;
+    $('#roomSelect').empty();
     for (var i of this.rooms) {
       this.addToRoomMenu(i);
     }
