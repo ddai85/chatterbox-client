@@ -134,18 +134,7 @@ class App {
     var $chatBox = $('#chats');
     for (var i = 0; i <= (messages.length - 1); i++) {
       var message = messages[i];
-      var $messageBlock = $('<div class="messageBlock"></div>');
-      var $username = $('<h3 class="username" data></h3>');
-      $username.data('username', message.username);
-      $username.text(message.username);
-      var $text = $('<p></p>');
-      $text.text(message.text);
-      var $timeStamp = $('<h5 class="time" data></h5>');
-      $timeStamp.text(message.createdAt);
-      $messageBlock.append($username);
-      $messageBlock.append($text);
-      $messageBlock.append($timeStamp);    
-      $chatBox.append($messageBlock);
+      this.addNewMessage(message);
       this.rooms.add(message.roomname);
       context.messageSet.add(message.objectId);
     }
@@ -160,10 +149,10 @@ class App {
   
   addNewMessage(message) {
     var $chatBox = $('#chats');
-    console.log('adding new message');
     var $messageBlock = $('<div class="messageBlock"></div>');
     var $username = $('<h3 class="username" data></h3>');
     $username.data('username', message.username);
+    
     $username.text(message.username);
     var $text = $('<p></p>');
     $text.text(message.text);
@@ -172,7 +161,8 @@ class App {
     $messageBlock.append($username);
     $messageBlock.append($text);
     $messageBlock.append($timeStamp);
-    $chatBox.prepend($messageBlock);
+    $messageBlock.addClass(message.username);
+    $chatBox.append($messageBlock);
   }
 
   clearMessages() {
@@ -196,6 +186,8 @@ class App {
   handleUsernameClick(username) {
     this.friendList[username] = true;
     this.addToFriendsList(username);
+    $('.' + username).css({'background-color': '#1e505f', 'font-color': 'white'});
+    
   }
 
 
